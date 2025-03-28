@@ -6,10 +6,15 @@ class RandomDetector():
     def __init__(self):
         pass
 
-    def detect(self, cap_image_path: str, ref_image_path=None):
-        print(cap_image_path, ref_image_path)
+    def detect(self, cap_image, ref_image=None, image_is_path=False):
+        print(cap_image, ref_image)
+        if image_is_path:
+            img_cap = cv2.imread(cap_image, cv2.IMREAD_GRAYSCALE)
+        else:
+            # image is file content
+            img_cap = cv2.imdecode(cap_image, cv2.IMREAD_GRAYSCALE)
+
         result = {}
-        img_cap = cv2.imread(cap_image_path, cv2.IMREAD_GRAYSCALE)
         img_width, img_height = img_cap.shape[:2]
 
         num_of_boxes = random.randint(0, 5)

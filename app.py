@@ -1,6 +1,8 @@
 from flask import Flask
 from flask import request, Response
 import json
+import base64
+import numpy as np
 from detect import RandomDetector
 
 app = Flask(__name__)
@@ -13,9 +15,13 @@ def hello_world():
 @app.route("/detect", methods=['POST'])
 def detect():
     try:
-        cap_image_path = request.json['cap_image_path']
-        ref_image_path = request.json['ref_image_path']
-        result = detector.detect(cap_image_path, ref_image_path)
+        cap_image = request.json['cap_image']
+        ref_image = request.json['ref_image']
+        image_is_path = request.json['image_is_path']
+        if not image_is_path:
+            cap_image = np.frombuffer(base64.b64decode(cap_image), dtype="uint8")
+            ref_image = np.frombuffer(base64.b64decode(ref_image), dtype="uint8")
+        result = detector.detect(cap_image, ref_image, image_is_path)
         response_data = result
         response_json = json.dumps(response_data)
         response_stat = 200
